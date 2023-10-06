@@ -26,7 +26,7 @@ module.exports = (sequelize) => {
       }
     },
     quantityPerKg:{
-      type: Sequelize.INTEGER
+      type: DataTypes.INTEGER
     },
     discount: {
       type: DataTypes.FLOAT,
