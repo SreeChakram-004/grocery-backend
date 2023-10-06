@@ -43,20 +43,7 @@ module.exports = (sequelize) => {
     }
   }, {
     sequelize,
-    modelName: 'Product',
-    hooks: {
-      beforeSave: (product, options) => {
-        const productPrice = product.productPrice;
-        const discount = product.discount;
-
-        if (productPrice && discount !== null) {
-          const calculatedOurPrice = (productPrice * discount )/ 100;
-          product.ourPrice = calculatedOurPrice * quantityPerKg;
-        } else {
-          product.ourPrice = null;
-        }
-      }
-    }
+    modelName: 'Product'
   });
 
   return Product;
