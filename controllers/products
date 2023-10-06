@@ -1,0 +1,106 @@
+const { Product } = require('../models');
+const { Op } = require('sequelize');
+
+// Create a product
+const createProduct = async (req, res) => {
+  try {
+    const { productName, productPrice } = req.body;
+    const product = await Product.create({
+      productName,
+      productPrice,
+      discount
+    });
+    res.status(201).json({ message: 'Product created successfully', product });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to create product', details: error.message });
+  }
+};
+
+// Get all products
+const getAllProducts = async (req, res) => {
+  try {
+    const { page, limit, sortBy, sortDirection, search } = req.query;
+
+    const defaultPage = 1;
+    const defaultLimit = 10;
+    const defaultSortBy = 'createdAt';
+    const defaultSortDirection = 'asc';
+
+    const actualPage = page ? parseInt(page, 10) : defaultPage;
+    const actualLimit = limit ? parseInt(limit, 10) : defaultLimit;
+    const actualSortBy = sortBy || defaultSortBy;
+    const actualSortDirection = sortDirection || defaultSortDirection;
+
+    const options = {
+      limit: actualLimit,
+      offset: (actualPage - 1) * actualLimit,
+      order: [[actualSortBy, actualSortDirection]],
+      where: search
+        ? {
+            [Op.or]: {
+              productName: { [Op.like]: `%${search}%` },
+              // Add more fields for search if needed
+            },
+          }
+        : undefined,
+    };
+
+    // Fetch paginated products
+    const products = await Product.findAll(options);
+
+    // Fetch total count of all products for pagination info
+    const totalCount = await Product.count();
+
+    res.json({
+      products,
+      totalCount,
+      totalPages: Math.ceil(totalCount / actualLimit),
+      currentPage: actualPage,
+      limit: actualLimit,
+    });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to retrieve products', details: error.message });
+  }
+};
+
+// Update a product
+const updateProduct = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { productName, productPrice } = req.body;
+    const product = await Product.findByPk(id);
+    if (product) {
+      product.productName = productName;
+      product.productPrice = productPrice;
+      await product.save();
+      res.json({ message: 'Product updated successfully', product });
+    } else {
+      res.status(404).json({ error: `Product with ID ${id} not found` });
+    }
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to update product', details: error.message });
+  }
+};
+
+// Delete a product
+const deleteProduct = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const product = await Product.findByPk(id);
+    if (product) {
+      await product.destroy();
+      res.json({ message: 'Product deleted successfully' });
+    } else {
+      res.status(404).json({ error: `Product with ID ${id} not found` });
+    }
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to delete product', details: error.message });
+  }
+};
+
+module.exports = {
+  createProduct,
+  getAllProducts,
+  updateProduct,
+  deleteProduct,
+};
