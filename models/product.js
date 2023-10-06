@@ -48,10 +48,11 @@ module.exports = (sequelize) => {
       beforeSave: (product, options) => {
         const productPrice = product.productPrice;
         const discount = product.discount;
+        const quantity = product.quantityPerKg
 
         if (productPrice && discount !== null) {
           const calculatedOurPrice = (productPrice * discount )/ 100;
-          product.ourPrice = calculatedOurPrice * quantityPerKg;
+          product.ourPrice = calculatedOurPrice * quantity;
         } else {
           product.ourPrice = null;
         }
