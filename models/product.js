@@ -51,7 +51,7 @@ module.exports = (sequelize) => {
         const quantity = product.quantityPerKg
 
         if (productPrice && discount !== null) {
-          const calculatedOurPrice = (productPrice * discount )/ 100;
+          const calculatedOurPrice = (productPrice)-  ((productPrice * discount )/ 100);
           product.ourPrice = calculatedOurPrice * quantity;
         } else {
           product.ourPrice = null;
