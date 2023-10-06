@@ -25,7 +25,7 @@ module.exports = (sequelize) => {
         min: 0.01
       }
     },
-    quantityPerKg:{
+    quantityPerKg: {
       type: DataTypes.INTEGER
     },
     discount: {
@@ -46,13 +46,13 @@ module.exports = (sequelize) => {
     modelName: 'Product',
     hooks: {
       beforeSave: (product, options) => {
-        const productPrice = product.productPrice;
-        const discount = product.discount;
-        const quantity = product.quantityPerKg
+        const productPrice = parseFloat(product.productPrice).toFixed(2);
+        const discount = parseFloat(product.discount).toFixed(2);
+        const quantity = parseFloat(product.quantityPerKg).toFixed(2);
 
-        if (productPrice && discount !== null) {
-          const calculatedOurPrice = (productPrice)-  ((productPrice * discount )/ 100);
-          product.ourPrice = calculatedOurPrice * quantity;
+        if (!isNaN(productPrice) && !isNaN(discount)) {
+          const calculatedOurPrice = parseFloat(productPrice) - (parseFloat(productPrice) * parseFloat(discount) / 100);
+          product.ourPrice = parseFloat(calculatedOurPrice * quantity).toFixed(2);
         } else {
           product.ourPrice = null;
         }
