@@ -25,6 +25,14 @@ module.exports = (sequelize) => {
         min: 0.01
       }
     },
+    category:{
+      type: DataTypes.STRING,
+      allowNull:false,
+      validate: {
+        notEmpty: true,
+        len: [1, 255]
+      }
+    },
     quantityPerKg: {
       type: DataTypes.INTEGER
     },

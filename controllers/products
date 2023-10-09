@@ -4,10 +4,22 @@ const { Op } = require('sequelize');
 // Create a product
 const createProduct = async (req, res) => {
   try {
-    const { productName, productPrice, discount, quantityPerKg } = req.body;
+    // const { productName, productPrice,category,discount, quantityPerKg } = req.body;
+    const productName = req.body.productName;
+    const productPrice = req.body.productPrice;
+    const category = req.body.category;
+    if(category == freshCategory) {
+      const discount = 5
+    }else{
+      const discount = 10
+    }
+
+    const quantityPerKg = req.body.quantityPerKg;
+
     const product = await Product.create({
       productName,
       productPrice,
+      category,
       discount,
       quantityPerKg
     });
