@@ -8,11 +8,13 @@ const createProduct = async (req, res) => {
     const productName = req.body.productName;
     const productPrice = req.body.productPrice;
     const category = req.body.category;
+    let discount;
     if(category == "freshCategory") {
-      const discount = 5
+      discount = 5
     }else{
-      const discount = 10
+      discount = 10
     }
+
 
     const quantityPerKg = req.body.quantityPerKg;
 
